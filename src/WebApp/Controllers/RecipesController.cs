@@ -42,8 +42,14 @@ namespace WebApp.Controllers
         {
             Id = recipe.Id,
             Name = recipe.Name,
-            Instructions = string.Join(Environment.NewLine, recipe.Instructions),
-            Ingredients = recipe.Ingredients.Select(i => i.ToString()).ToArray()
+            Instructions = recipe.Instructions.ToArray(),
+            Ingredients = recipe.Ingredients.Select(ToIngredientContract).ToArray()
+        };
+
+        private static IngredientContract ToIngredientContract(Ingredient ingredient) => new IngredientContract
+        {
+            Quantity = ingredient.Quantity.ToString(),
+            Name = ingredient.Name
         };
     }
 }

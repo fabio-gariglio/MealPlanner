@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class RecipeListItem extends Component {
+export function RecipeListItem(props) {
 
-    render() {
-        return (
-            <a href={`/recipes/${this.props.id}`}>{this.props.name}</a>
-        );
-    }
+    return (
+        <a href={`/recipes/${props.id}`}>{props.name}</a>
+    );
+
 }

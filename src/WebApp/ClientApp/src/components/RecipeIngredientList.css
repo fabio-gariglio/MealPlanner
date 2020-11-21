@@ -1,0 +1,10 @@
+.recipe-ingredient-list {
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-top: red solid 2px;
+}
+
+.recipe-ingredient-quantity {
+    font-weight: bold;
+    text-align: right;
+}

@@ -19,7 +19,7 @@ export default class App extends Component {
         <Route path='/counter' component={Counter} />
         <Route path='/fetch-data' component={FetchData} />
         <Route exact path='/recipes' component={RecipeList} />
-        <Route path='/recipes/:id' component={RecipeDetails} />            
+        <Route path='/recipes/:recipeId' component={RecipeDetails} />            
       </Layout>
     );
   }

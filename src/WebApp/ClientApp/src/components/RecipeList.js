@@ -1,28 +1,24 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
 import { RecipeListItem } from './RecipeListItem';
 
-export class RecipeList extends Component {
+export function RecipeList() {
 
-  constructor(props) {
-    super(props);
-    this.state = { recipes: [] };
-    }
+    const [recipes, setRecipes] = useState([]);
 
-    componentDidMount() {
-        this.populateRecipesData();
-    }
+    useEffect(() => {
+        async function fetchRecipes() {
+            const result = await axios('/api/recipes');
+            setRecipes(result.data);
+        };
+        fetchRecipes();
+    }, []);
 
-  async populateRecipesData() {
-     const response = await fetch('api/recipes');
-     const data = await response.json();
-     this.setState({ recipes: data });
-  }
-
-  render() {
     return (
-      <div>
-            {this.state.recipes.map(r => (<RecipeListItem {...r}/>))}
-      </div>
+        <div>
+            {recipes.map(r => (<RecipeListItem {...r} />))}
+        </div>
     );
-  }
-}
+
+};
