@@ -8,7 +8,7 @@ using WebApp.Services;
 namespace WebApp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class RecipesController : ControllerBase
     {
         private readonly IRecipeService _recipeService;

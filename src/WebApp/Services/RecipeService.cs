@@ -34,9 +34,9 @@ namespace WebApp.Services
     {
         public double Value { get; set; }
 
-        public AbsoluteQuantity(double Value)
+        public AbsoluteQuantity(double value)
         {
-            Value = Value;
+            Value = value;
         }
 
         public override string ToString() => Value.ToString();
@@ -62,7 +62,7 @@ namespace WebApp.Services
 
     public class RecipeService : IRecipeService
     {
-        private static Recipe _cinnamonOatmealPancakes = new Recipe
+        private static readonly Recipe _cinnamonOatmealPancakes = new Recipe
         {
             Id = Guid.NewGuid().ToString("N"),
             Name = "Cinnamon Oatmeal Pancakes",
