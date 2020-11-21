@@ -23,7 +23,11 @@ export function RecipeDetails() {
         return (
             <Container>
                 <Row>
-                    <Col><h1>{recipeDetails.name}</h1></Col>
+                    <Col xs={10}><h1>{recipeDetails.name}</h1></Col>
+                    <Col xs={2}>
+                        <Row><strong>{recipeDetails.servings}</strong> serving</Row>
+                        <Row><strong>{recipeDetails.preparation}</strong> minutes</Row>
+                    </Col>
                 </Row>
                 <Row>
                     <Col lg={4} md={12}>
