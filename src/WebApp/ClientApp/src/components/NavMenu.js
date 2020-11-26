@@ -10,6 +10,7 @@ export function NavMenu() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
+          <NavLink to="/recipes/creator">Create New</NavLink>
           <NavLink to="/about">About</NavLink>
         </Nav>
       </Navbar.Collapse>

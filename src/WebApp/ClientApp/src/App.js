@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import { RecipeList } from './components/RecipeList';
 import { RecipeDetails } from './components/RecipeDetails';
+import { RecipeCreator } from './components/RecipeCreator';
 import { NavMenu } from './components/NavMenu';
 
 
@@ -16,6 +17,9 @@ export function App(props) {
         <Switch>
           <Route path="/about">
             <p>hello</p>
+          </Route>
+          <Route path="/recipes/creator">
+            <RecipeCreator />
           </Route>
           <Route path="/recipes/:recipeId">
             <RecipeDetails />
