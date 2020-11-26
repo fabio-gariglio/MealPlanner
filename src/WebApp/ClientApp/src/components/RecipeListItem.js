@@ -1,9 +1,10 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export function RecipeListItem(props) {
 
-    return (
-        <a href={`/recipes/${props.id}`}>{props.name}</a>
-    );
+  return (
+    <NavLink to={`/recipes/${props.id}`}> { props.name }</NavLink>
+  );
 
 }

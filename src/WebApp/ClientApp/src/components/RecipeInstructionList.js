@@ -5,14 +5,14 @@ import './RecipeInstructionList.css'
 
 export function RecipeInstructionList(props) {
 
-    const renderInstruction = (instruction) => (<Row>
-        <p>{instruction}</p>
-    </Row>);
+  const renderInstruction = (instruction, index) => (<Row key={index}>
+    <p>{instruction}</p>
+  </Row>);
 
-    return (
-        <Container>
-            <Row className="recipe-instruction-list">Instructions</Row>
-            {props.instructions.map(renderInstruction)}
-        </Container>
-    );
+  return (
+    <Container>
+      <Row className="recipe-instruction-list">Instructions</Row>
+      {props.instructions.map(renderInstruction)}
+    </Container>
+  );
 }

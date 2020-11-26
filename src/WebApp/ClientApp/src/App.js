@@ -1,20 +1,31 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router';
-import { Layout } from './components/Layout';
+import React from 'react';
+import { Container } from 'react-bootstrap';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+
 import { RecipeList } from './components/RecipeList';
 import { RecipeDetails } from './components/RecipeDetails';
+import { NavMenu } from './components/NavMenu';
 
-import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
+export function App(props) {
 
-  render () {
-    return (
-      <Layout>
-        <Route exact path='/' component={RecipeList} />
-        <Route path='/recipes/:recipeId' component={RecipeDetails} />            
-      </Layout>
-    );
-  }
-}
+  return (
+    <BrowserRouter basename={props.baseUrl} forceRefresh={false}>
+      <NavMenu />
+      <Container>
+        <Switch>
+          <Route path="/about">
+            <p>hello</p>
+          </Route>
+          <Route path="/recipes/:recipeId">
+            <RecipeDetails />
+          </Route>
+          <Route path="/">
+            <RecipeList />
+          </Route>
+        </Switch>
+      </Container>
+    </BrowserRouter >
+  );
+
+};

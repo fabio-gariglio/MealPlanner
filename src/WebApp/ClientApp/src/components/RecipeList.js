@@ -5,20 +5,20 @@ import { RecipeListItem } from './RecipeListItem';
 
 export function RecipeList() {
 
-    const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
-    useEffect(() => {
-        async function fetchRecipes() {
-            const result = await axios('/api/recipes');
-            setRecipes(result.data);
-        };
-        fetchRecipes();
-    }, []);
+  useEffect(() => {
+    async function fetchRecipes() {
+      const result = await axios('/api/recipes');
+      setRecipes(result.data);
+    };
+    fetchRecipes();
+  }, []);
 
-    return (
-        <div>
-            {recipes.map(r => (<RecipeListItem {...r} />))}
-        </div>
-    );
+  return (
+    <div>
+      {recipes.map(r => (<RecipeListItem {...r} key={r.id} />))}
+    </div>
+  );
 
 };
