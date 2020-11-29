@@ -1,3 +1,4 @@
+using Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -21,6 +22,7 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IRecipeService, RecipeService>();
+            services.AddSingleton<IIngredientParser, IngredientParser>();
             services.AddControllers();
 
             // In production, the React files will be served from this directory

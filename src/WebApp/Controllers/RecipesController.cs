@@ -2,6 +2,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
+using Domain.Models;
 using WebApp.Contracts;
 using WebApp.Services;
 
@@ -12,10 +14,12 @@ namespace WebApp.Controllers
     public class RecipesController : ControllerBase
     {
         private readonly IRecipeService _recipeService;
+        private readonly IIngredientParser _ingredientParser;
 
-        public RecipesController(IRecipeService recipeService)
+        public RecipesController(IRecipeService recipeService, IIngredientParser ingredientParser)
         {
             _recipeService = recipeService;
+            _ingredientParser = ingredientParser;
         }
 
         [HttpGet]
@@ -38,6 +42,18 @@ namespace WebApp.Controllers
             return Ok(response);
         }
 
+        [HttpPost("import")]
+        public async Task<IActionResult> Import([FromBody] RecipeImportRequest request)
+        {
+            var recipe = ToRecipe(request);
+
+            await _recipeService.SaveAsync(recipe);
+
+            var response = ToRecipeContract(recipe);
+
+            return Ok(response);
+        }
+
         private static RecipeContract ToRecipeContract(Recipe recipe) => new RecipeContract
         {
             Id = recipe.Id,
@@ -50,8 +66,27 @@ namespace WebApp.Controllers
 
         private static IngredientContract ToIngredientContract(Ingredient ingredient) => new IngredientContract
         {
-            Quantity = ingredient.Quantity.ToString(),
+            Quantity = ingredient.Quantity?.ToString(),
             Name = ingredient.Name
         };
+
+        private Recipe ToRecipe(RecipeImportRequest request)
+        {
+            var ingredients = request.IngredientList
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                .Select(_ingredientParser.Parse)
+                .ToArray();
+
+            var instructions = request.InstructionList
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            return new Recipe
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = request.Name,
+                Ingredients = ingredients,
+                Instructions = instructions
+            };
+        }
     }
 }

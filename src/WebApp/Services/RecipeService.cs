@@ -2,64 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
+using Domain.Models;
 
 namespace WebApp.Services
 {
-    public abstract class Quantity
-    {
-    }
-
-    public enum VolumeUnit
-    {
-        Cup,
-        Tablespoon,
-        Teaspoon
-    }
-
-    public class VolumeQuantity : Quantity
-    {
-        public double Value { get; set; }
-        public VolumeUnit Unit { get; set; }
-
-        public VolumeQuantity(double value, VolumeUnit unit)
-        {
-            Value = value;
-            Unit = unit;
-        }
-
-        public override string ToString() => $"{Value} {Unit}";
-    }
-
-    public class AbsoluteQuantity : Quantity
-    {
-        public double Value { get; set; }
-
-        public AbsoluteQuantity(double value)
-        {
-            Value = value;
-        }
-
-        public override string ToString() => Value.ToString();
-    }
-
-    public class Ingredient
-    {
-        public string Name { get; internal set; }
-        public Quantity Quantity { get; internal set; }
-
-        public override string ToString() => $"{Quantity} {Name}";
-    }
-
-    public class Recipe
-    {
-        public string Id { get; internal set; }
-        public string Name { get; internal set; }
-        public string[] Instructions { get; internal set; }
-        public Ingredient[] Ingredients { get; internal set; }
-        public int Servings { get; internal set; }
-        public TimeSpan Preparation { get; internal set; }
-    }
-
     public class RecipeService : IRecipeService
     {
         private static readonly Recipe _cinnamonOatmealPancakes = new Recipe
@@ -75,30 +22,37 @@ namespace WebApp.Services
             },
             Ingredients = new[]
             {
-                new Ingredient { Name= "Oats (rolled)", Quantity = new VolumeQuantity(3, VolumeUnit.Cup) },
-                new Ingredient { Name= "Baking Powder", Quantity = new VolumeQuantity(1, VolumeUnit.Teaspoon) },
-                new Ingredient { Name= "Cinnamon", Quantity = new VolumeQuantity(1, VolumeUnit.Tablespoon) },
-                new Ingredient { Name= "Egg", Quantity = new AbsoluteQuantity(1) },
-                new Ingredient { Name= "Unsweetened Almond Milk", Quantity = new VolumeQuantity(1.5, VolumeUnit.Cup) },
-                new Ingredient { Name= "Coconut Oil", Quantity = new VolumeQuantity(2, VolumeUnit.Tablespoon) },
-                new Ingredient { Name= "Pomegranate Seeds", Quantity = new VolumeQuantity(0.25, VolumeUnit.Cup) },
-                new Ingredient { Name= "Raspberries", Quantity = new VolumeQuantity(0.33, VolumeUnit.Cup) },
-                new Ingredient { Name= "Pumpkin Seeds", Quantity = new VolumeQuantity(0.25, VolumeUnit.Cup) },
+                new Ingredient { Name= "Oats (rolled)", Quantity = new Quantity(3, Unit.Cup) },
+                new Ingredient { Name= "Baking Powder", Quantity = new Quantity(1, Unit.Teaspoon) },
+                new Ingredient { Name= "Cinnamon", Quantity = new Quantity(1, Unit.Tablespoon) },
+                new Ingredient { Name= "Egg", Quantity = new Quantity(1) },
+                new Ingredient { Name= "Unsweetened Almond Milk", Quantity = new Quantity(1.5, Unit.Cup) },
+                new Ingredient { Name= "Coconut Oil", Quantity = new Quantity(2, Unit.Tablespoon) },
+                new Ingredient { Name= "Pomegranate Seeds", Quantity = new Quantity(0.25, Unit.Cup) },
+                new Ingredient { Name= "Raspberries", Quantity = new Quantity(0.33, Unit.Cup) },
+                new Ingredient { Name= "Pumpkin Seeds", Quantity = new Quantity(0.25, Unit.Cup) },
             },
             Servings = 5,
             Preparation = TimeSpan.FromMinutes(25)
         };
 
-        private readonly IEnumerable<Recipe> _recipes = new Recipe[] { _cinnamonOatmealPancakes };
+        private readonly IList<Recipe> _recipes = new List<Recipe> { _cinnamonOatmealPancakes };
 
         public Task<IEnumerable<Recipe>> GetAllAsync()
         {
-            return Task.FromResult(_recipes);
+            return Task.FromResult((IEnumerable<Recipe>) _recipes);
         }
 
         public Task<Recipe> GetByIdAsync(string id)
         {
             return Task.FromResult(_recipes.FirstOrDefault(r => r.Id == id));
+        }
+
+        public Task SaveAsync(Recipe recipe)
+        {
+            _recipes.Add(recipe);
+
+            return Task.CompletedTask;
         }
     }
 }

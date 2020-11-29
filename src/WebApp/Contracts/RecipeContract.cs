@@ -1,5 +1,6 @@
 ﻿namespace WebApp.Contracts
 {
+
     public class IngredientContract
     {
         public string Quantity { get; set; }
