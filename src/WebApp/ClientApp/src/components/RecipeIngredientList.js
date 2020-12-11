@@ -5,9 +5,11 @@ import './RecipeIngredientList.css';
 
 export function RecipeIngredientList(props) {
 
+  const renderNotes = (notes) => !!notes && notes.length > 0 ? `(${notes.join(", ")})` : "";
+
   const renderRecipeIngredient = (ingredient, index) => (<Row key={index}>
-    <Col className="recipe-ingredient-quantity">{ingredient.quantity}</Col>
-    <Col>{ingredient.name}</Col>
+    <Col className="recipe-ingredient-quantity">{ingredient.quantity} {ingredient.unit}</Col>
+    <Col>{ingredient.name} <em>{renderNotes(ingredient.notes)}</em></Col>
   </Row>);
 
   return (

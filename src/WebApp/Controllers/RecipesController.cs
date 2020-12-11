@@ -2,10 +2,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Domain;
 using Domain.Models;
 using WebApp.Contracts;
-using WebApp.Services;
 
 namespace WebApp.Controllers
 {
@@ -13,20 +13,24 @@ namespace WebApp.Controllers
     [Route("api/[controller]")]
     public class RecipesController : ControllerBase
     {
-        private readonly IRecipeService _recipeService;
+        private readonly IRecipeRepository _recipeRepository;
         private readonly IIngredientParser _ingredientParser;
+        private readonly IMapper _mapper;
 
-        public RecipesController(IRecipeService recipeService, IIngredientParser ingredientParser)
+        public RecipesController(IRecipeRepository recipeRepository,
+            IIngredientParser ingredientParser,
+            IMapper mapper)
         {
-            _recipeService = recipeService;
+            _recipeRepository = recipeRepository;
             _ingredientParser = ingredientParser;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var recipes = await _recipeService.GetAllAsync();
-            var response = recipes.Select(ToRecipeContract).ToArray();
+            var recipes = await _recipeRepository.GetAllAsync();
+            var response = recipes.Select(_mapper.Map<RecipeResponseContract>);
 
             return Ok(response);
         }
@@ -34,10 +38,10 @@ namespace WebApp.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var recipe = await _recipeService.GetByIdAsync(id);
+            var recipe = await _recipeRepository.GetByIdAsync(id);
             if (recipe == null) return NotFound();
 
-            var response = ToRecipeContract(recipe);
+            var response = _mapper.Map<RecipeResponseContract>(recipe);
 
             return Ok(response);
         }
@@ -47,28 +51,12 @@ namespace WebApp.Controllers
         {
             var recipe = ToRecipe(request);
 
-            await _recipeService.SaveAsync(recipe);
+            await _recipeRepository.InsertAsync(recipe);
 
-            var response = ToRecipeContract(recipe);
-
+            var response = _mapper.Map<RecipeResponseContract>(recipe);
+            
             return Ok(response);
         }
-
-        private static RecipeContract ToRecipeContract(Recipe recipe) => new RecipeContract
-        {
-            Id = recipe.Id,
-            Name = recipe.Name,
-            Instructions = recipe.Instructions.ToArray(),
-            Ingredients = recipe.Ingredients.Select(ToIngredientContract).ToArray(),
-            Servings = recipe.Servings,
-            Preparation = recipe.Preparation.TotalMinutes
-        };
-
-        private static IngredientContract ToIngredientContract(Ingredient ingredient) => new IngredientContract
-        {
-            Quantity = ingredient.Quantity?.ToString(),
-            Name = ingredient.Name
-        };
 
         private Recipe ToRecipe(RecipeImportRequest request)
         {
@@ -85,7 +73,9 @@ namespace WebApp.Controllers
                 Id = Guid.NewGuid().ToString(),
                 Name = request.Name,
                 Ingredients = ingredients,
-                Instructions = instructions
+                Instructions = instructions,
+                Servings = request.Servings,
+                Preparation = TimeSpan.FromMinutes(request.Preparation)
             };
         }
     }

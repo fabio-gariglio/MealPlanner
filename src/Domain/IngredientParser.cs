@@ -29,37 +29,36 @@ namespace Domain
         {
             var match = _regex.Match(input);
             
-            return new Ingredient
+            var ingredient = new Ingredient
             {
-                Quantity = ParseQuantity(match),
                 Name = match.Groups["name"].Value,
                 Notes = ParseNotes(match.Groups["notes"]),
+                Unit = Unit.None,
+                Quantity = 0
             };
+
+            if (match.Groups["quantity"].Success)
+            {
+                ingredient.Unit= ParseUnit(match.Groups["unit"]);
+                ingredient.Quantity = ParseQuantity(match.Groups["value"]);
+            }
+
+            return ingredient;
         }
 
-        private Quantity ParseQuantity(Match match)
-        {
-            if (!match.Groups["quantity"].Success) return null;
-
-            var value = ParseValue(match.Groups["value"]);
-            var unit = ParseUnit(match.Groups["unit"]);
-
-            return new Quantity(value, unit);
-        }
-
-        private static double ParseValue(Capture capture)
+        private static double ParseQuantity(Capture capture)
         {
             return capture.Value.Contains("/")
-                ? ParseValueAsFraction(capture)
-                : ParseValueAsNumber(capture);
+                ? ParseQuantityAsFraction(capture)
+                : ParseQuantityAsNumber(capture);
         }
 
-        private static double ParseValueAsNumber(Capture capture)
+        private static double ParseQuantityAsNumber(Capture capture)
         {
             return double.Parse(capture.Value);
         }
 
-        private static double ParseValueAsFraction(Capture capture)
+        private static double ParseQuantityAsFraction(Capture capture)
         {
             var numbers = capture.Value.Split('/');
             var numerator = double.Parse(numbers.First());

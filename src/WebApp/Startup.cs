@@ -1,3 +1,4 @@
+using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,7 +6,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApp.Services;
+using Persistence;
+using WebApp.IoC;
 
 namespace WebApp
 {
@@ -21,8 +23,10 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IRecipeService, RecipeService>();
+            services.AddSingleton<IRecipeRepository, RecipeRepository>();
             services.AddSingleton<IIngredientParser, IngredientParser>();
+            services.AddMongoDb(Configuration);
+            services.AddAutoMapper(typeof(WebAppProfile) ,typeof(PersistenceProfile));
             services.AddControllers();
 
             // In production, the React files will be served from this directory
