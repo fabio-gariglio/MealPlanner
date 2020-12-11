@@ -1,6 +1,5 @@
 using Domain.Models;
 using FluentAssertions;
-using Microsoft.VisualBasic.CompilerServices;
 using NUnit.Framework;
 
 namespace Domain.Tests
@@ -22,24 +21,23 @@ namespace Domain.Tests
 
             ingredient.Should().NotBeNull();
             ingredient.Name.Should().Be("flour");
-            ingredient.Quantity.Should().NotBeNull();
-            ingredient.Quantity.Value.Should().Be(1);
-            ingredient.Quantity.Unit.Should().Be(Unit.Cup);
+            ingredient.Quantity.Should().Be(1);
+            ingredient.Unit.Should().Be(Unit.Cup);
         }
 
-        [TestCase("1 cup flour",Unit.Cup)]
-        [TestCase("2 cups flour", Unit.Cup)]
-        [TestCase("1 tbsp flour", Unit.Tablespoon)]
-        [TestCase("2 tbsps flour", Unit.Tablespoon)]
-        [TestCase("1 tsp flour", Unit.Teaspoon)]
-        [TestCase("2 tsps flour", Unit.Teaspoon)]
-        [TestCase("1 gram flour", Unit.Gram)]
-        [TestCase("2 grams flour", Unit.Gram)]
-        public void Parse_converts_quantity_unit(string input, Unit expectedUnit)
+        [TestCase("1 cup flour", nameof(Unit.Cup))]
+        [TestCase("2 cups flour", nameof(Unit.Cup))]
+        [TestCase("1 tbsp flour", nameof(Unit.Tablespoon))]
+        [TestCase("2 tbsps flour", nameof(Unit.Tablespoon))]
+        [TestCase("1 tsp flour", nameof(Unit.Teaspoon))]
+        [TestCase("2 tsps flour", nameof(Unit.Teaspoon))]
+        [TestCase("1 gram flour", nameof(Unit.Gram))]
+        [TestCase("2 grams flour", nameof(Unit.Gram))]
+        public void Parse_converts_quantity_unit(string input, string expectedUnit)
         {
             var ingredient = _parser.Parse(input);
 
-            ingredient.Quantity.Unit.Should().Be(expectedUnit);
+            ingredient.Unit.Name.Should().Be(expectedUnit);
         }
 
         [Test]
@@ -48,8 +46,8 @@ namespace Domain.Tests
             var ingredient = _parser.Parse("1 Onion");
 
             ingredient.Name.Should().Be("Onion");
-            ingredient.Quantity.Value.Should().Be(1);
-            ingredient.Quantity.Unit.Should().Be(Unit.None);
+            ingredient.Quantity.Should().Be(1);
+            ingredient.Unit.Should().Be(Unit.None);
         }
 
         [Test]
@@ -58,7 +56,8 @@ namespace Domain.Tests
             var ingredient = _parser.Parse("Sea Salt");
 
             ingredient.Name.Should().Be("Sea Salt");
-            ingredient.Quantity.Should().BeNull();
+            ingredient.Quantity.Should().Be(0);
+            ingredient.Unit.Should().Be(Unit.None);
         }
 
         [Test]
@@ -99,7 +98,7 @@ namespace Domain.Tests
         {
             var ingredient = _parser.Parse(input);
 
-            ingredient.Quantity.Value.Should().Be(expectedValue);
+            ingredient.Quantity.Should().Be(expectedValue);
         }
     }
 }
